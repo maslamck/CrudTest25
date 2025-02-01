@@ -1,0 +1,39 @@
+﻿@model List<CrudTest25.Web.Models.Domain.Tag>
+@{
+}
+<h3>
+    List Tags
+</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Display Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var tag in Model)
+            {
+                <tr>
+                    @* <th scope="row">@tag.Id</th> *@
+                    <td> @(((Int32)1) + @Model.IndexOf(tag)) </td>
+                    <td>@tag.Name</td>
+                    <td>@tag.DisplayName</td>
+                    <td><a class="link" asp-area="" asp-controller="AdminTag" asp-action="Edit" asp-route-id="@tag.Id">Edit</a></td>
+                </tr>
+            }
+
+        }
+        else
+        {
+            <tr><td colspan="4"><p>No tag found!</p></td></tr>
+        }
+    </tbody>
+
+</table>

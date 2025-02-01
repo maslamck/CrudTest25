@@ -1,0 +1,21 @@
+﻿@model CrudTest25.Web.Models.ViewModels.EditTagRequest;
+@{
+}
+<h3>
+    Edit Tag
+</h3>
+
+<form method="post">
+    <input type="hidden"id="id" name="Id" asp-for="Id">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="Name" asp-for="Name" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="displayName" class="form-label">Display Name</label>
+        <input type="text" class="form-control" id="displayName" name="DisplayName" asp-for="DisplayName">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn btn-danger" asp-area="" asp-controller="AdminTag" asp-action="Delete">Delete</button>
+</form>
