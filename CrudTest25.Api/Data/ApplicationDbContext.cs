@@ -1,15 +1,13 @@
-﻿using CrudTest25.Web.Models.Domain;
+﻿using CrudTest25.Api.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace CrudTest25.Web.Data
+namespace CrudTest25.Api.Data
 {
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
-
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

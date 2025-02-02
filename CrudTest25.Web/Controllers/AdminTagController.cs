@@ -1,6 +1,7 @@
 ﻿using CrudTest25.Web.Data;
 using CrudTest25.Web.Models.Domain;
 using CrudTest25.Web.Models.ViewModels;
+using CrudTest25.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,11 @@ namespace CrudTest25.Web.Controllers
 {
     public class AdminTagController : Controller
     {
-        private readonly ApplicationDbContext applicationDbContext;
+        private readonly ITagRepository tagRepository;
 
-        public AdminTagController(ApplicationDbContext applicationDbContext)
+        public AdminTagController(ITagRepository tagRepository)
         {
-            this.applicationDbContext = applicationDbContext;
+            this.tagRepository = tagRepository;
         }
         [HttpGet]
         public IActionResult Add()
@@ -28,22 +29,21 @@ namespace CrudTest25.Web.Controllers
                 DisplayName = addTagRequest.DisplayName,
             };
 
-            await applicationDbContext.Tags.AddAsync(tag);
-            await applicationDbContext.SaveChangesAsync();
+            await tagRepository.AddAsync(tag);
 
             return RedirectToAction("List");
         }
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            var tags = await applicationDbContext.Tags.ToListAsync();
+            var tags = await tagRepository.GetAllAsync();
             return View(tags);
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             //var tag = applicationDbContext.Tags.Find(id);
-            var tag = await applicationDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
+            var tag = await tagRepository.GetAsync(id);
 
             if (tag != null)
             {
@@ -62,34 +62,21 @@ namespace CrudTest25.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditTagRequest editTagRequest)
         {
-            //var tag = new Tag
-            //{
-            //    Id = editTagRequest.Id,
-            //    Name = editTagRequest.Name,
-            //    DisplayName = editTagRequest.DisplayName,
-            //};
-
-            var existingTag = await applicationDbContext.Tags.FirstOrDefaultAsync(x => x.Id == editTagRequest.Id);
-            if (existingTag != null)
+            var tag = new Tag
             {
-                existingTag.Name = editTagRequest.Name;
-                existingTag.DisplayName = editTagRequest.DisplayName;
-                await applicationDbContext.SaveChangesAsync();
-            }
+                Id = editTagRequest.Id,
+                Name = editTagRequest.Name,
+                DisplayName = editTagRequest.DisplayName,
+            };
+
+            await tagRepository.UpdateAsync(tag);
             return RedirectToAction("List");
         }
         [HttpPost]
         public async Task<IActionResult> Delete(EditTagRequest editTagRequest)
         {
-            var tag = await applicationDbContext.Tags.FirstOrDefaultAsync(x => x.Id == editTagRequest.Id);
-            if (tag != null)
-            {
-                applicationDbContext.Tags.Remove(tag);
-                await applicationDbContext.SaveChangesAsync();
-                return RedirectToAction("List");
-
-            }
-            return RedirectToAction("Edit", new { id = editTagRequest.Id });
+            await tagRepository.DeleteAsync(editTagRequest.Id);
+            return RedirectToAction("List");
         }
     }
 }
